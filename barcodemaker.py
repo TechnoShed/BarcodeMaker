@@ -5,6 +5,7 @@ from docx.shared import Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui
+import pandas as pd
 
 class MyGUI(QMainWindow):
 
@@ -22,6 +23,8 @@ class MyGUI(QMainWindow):
         options= QFileDialog.Options()
         filename, _ =QFileDialog.getOpenFileName(self ,"Open XL file", "", "Files (*.xlsx)")
         print("XL file is "+filename)
+        df 
+
 
         pass
 
@@ -35,6 +38,10 @@ class MyGUI(QMainWindow):
     def generatedoc(self):
         text2add = self.textEdit.toPlainText().upper().split("\n")
         document= Document()
+        section = document.sections[0]
+        footer= section.header
+        footertext = footer.paragraphs[0]
+        footer.text="Barcode Maker (c)2023 K. Winstanley"
         # Loop through the input box , create QRcode, Add to doc file
         for vin in text2add:
             if vin !='':
