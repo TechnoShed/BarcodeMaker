@@ -22,7 +22,7 @@ class MyGUI(QMainWindow):
         options= QFileDialog.Options()
         filename, _ =QFileDialog.getOpenFileName(self ,"Open XL file", "", "Files (*.xlsx)")
         print("XL file is "+filename)
-        
+
         pass
 
     def loadTXT(self):
@@ -30,20 +30,15 @@ class MyGUI(QMainWindow):
         filename, _ =QFileDialog.getOpenFileName(self ,"Open TXT file", "", "Files (*.txt)")
         with open(filename,"r") as f:
             inputtext = f.read()
-        print(inputtext)
         self.textEdit.setPlainText(inputtext)
         
-        pass
-
     def generatedoc(self):
         text2add = self.textEdit.toPlainText().upper().split("\n")
         document= Document()
-
-        # Loop through the input box , create QRcode, Add to doc file and display
-
+        # Loop through the input box , create QRcode, Add to doc file
         for vin in text2add:
             if vin !='':
-                print("vin is "+ vin)
+                print("Creating QRcode for "+ vin)
                 qr = qrcode.QRCode(version=1,
                             error_correction=qrcode.constants.ERROR_CORRECT_L,
                             box_size=20,
@@ -52,24 +47,31 @@ class MyGUI(QMainWindow):
                 qr.make(fit=True)
                 img= qr.make_image(fill_color="Black", back_color="White")
                 img.save("currentqr.png")
-                pixmap = QtGui.QPixmap("currentqr.png")
-                pixmap = pixmap.scaled(300, 300)
                 document.add_heading(vin,0)
-                p = document.add_paragraph()
-                document.add_picture("currentqr.png", width=Inches(3), height=Inches(3))
+                document.add_paragraph()
+                document.add_picture("currentqr.png", width=Inches(1), height=Inches(1))
+                last_paragraph = document.paragraphs[-1]
+                last_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                document.add_paragraph()
+                document.add_picture("currentqr.png", width=Inches(5), height=Inches(5))
                 last_paragraph = document.paragraphs[-1]
                 last_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                 document.add_page_break()
-            else:
-                print("Blank line")
-
-        document.save("barcodes.doc")
+            
+        pixmap = QtGui.QPixmap("currentqr.png")
+        pixmap = pixmap.scaled(300, 300)
+        
+        options= QFileDialog.Options()
+        filename, _ =QFileDialog.getSaveFileName(self ,"Save doc file", "", "Files (*.doc)")
+        
+        document.save(filename)
         self.label.setScaledContents(True)
         self.label.setPixmap(pixmap)
+        
         print("Process Completed")
 
 # for windows only
-#        os.startfile("barcodes.doc", "print")
+#        os.startfile(filename, "print")
     
        
 
