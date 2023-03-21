@@ -35,7 +35,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Barcode Maker (v1.14) (c) 2023 K. Winstanley</string>
+   <string>Barcode Maker (v1.15) (c) 2023 K. Winstanley</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="pushButton">

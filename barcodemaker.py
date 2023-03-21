@@ -75,19 +75,15 @@ class MyGUI(QMainWindow):
         pixmap = pixmap.scaled(300, 300)
         self.label.setScaledContents(True)
         self.label.setPixmap(pixmap)
-        
+        filename = "temp.doc"
         if action =="save":
             options= QFileDialog.Options()
-            filename, _ =QFileDialog.getSaveFileName(self ,"Save doc file", "", "Files (*.doc)")
+            filename, _ =QFileDialog.getSaveFileName(self ,"Save doc file", "", "Files (*.doc)") 
             if not filename:
-                filename = "temp.doc"
-        
-
-        if action =="print":
-            filename = "temp.doc"
+                filename = "temp.doc" 
         print("filename "+ filename)
         document.save(filename)
-        print("Save Process Completed")
+        print("QRcode Creation Process Completed")
     
     def savedoc(self):
         self.generatedoc(action="save")
