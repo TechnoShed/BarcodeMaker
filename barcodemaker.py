@@ -78,18 +78,11 @@ class MyGUI(QMainWindow):
 # for windows only
 #        os.startfile(filename, "print")
     
-       
-
-
 
 def main():
     app=QApplication([])
     window = MyGUI()
     app.exec_()
-
-
-
-
 
 if __name__ == "__main__":
     main()
