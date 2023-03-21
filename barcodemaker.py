@@ -22,12 +22,10 @@ class MyGUI(QMainWindow):
     def loadXL(self):
         options= QFileDialog.Options()
         filename, _ =QFileDialog.getOpenFileName(self ,"Open XL file", "", "Files (*.xlsx)")
-        print("XL file is "+filename)
-        df 
-
-
-        pass
-
+        inputdata = pd.read_excel(filename)
+        inputdata= inputdata['VIN'].to_string(index=False)
+        self.textEdit.setPlainText(inputdata)
+  
     def loadTXT(self):
         options= QFileDialog.Options()
         filename, _ =QFileDialog.getOpenFileName(self ,"Open TXT file", "", "Files (*.txt)")
