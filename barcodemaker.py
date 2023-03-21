@@ -1,5 +1,6 @@
 import os
 import qrcode
+import platform
 from docx import Document
 from docx.shared import Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
@@ -17,23 +18,30 @@ class MyGUI(QMainWindow):
         self.currentdoc = ""
         self.actionLoad.triggered.connect(self.loadXL)
         self.actionLoad_TXT.triggered.connect(self.loadTXT)
-        self.pushButton.clicked.connect(self.generatedoc)
+        self.pushButton.clicked.connect(self.savedoc)
+        self.pushButton_2.clicked.connect(self.printdoc)
 
     def loadXL(self):
         options= QFileDialog.Options()
         filename, _ =QFileDialog.getOpenFileName(self ,"Open XL file", "", "Files (*.xlsx)")
-        inputdata = pd.read_excel(filename)
-        inputdata= inputdata['VIN'].to_string(index=False)
-        self.textEdit.setPlainText(inputdata)
+        if not filename:
+            pass
+        else:
+            inputdata = pd.read_excel(filename)
+            inputdata= inputdata['VIN'].to_string(index=False)
+            self.textEdit.setPlainText(inputdata)
   
     def loadTXT(self):
         options= QFileDialog.Options()
         filename, _ =QFileDialog.getOpenFileName(self ,"Open TXT file", "", "Files (*.txt)")
-        with open(filename,"r") as f:
-            inputtext = f.read()
-        self.textEdit.setPlainText(inputtext)
-        
-    def generatedoc(self):
+        if not filename:
+            pass
+        else:
+            with open(filename,"r") as f:
+                inputtext = f.read()
+            self.textEdit.setPlainText(inputtext)
+    
+    def generatedoc(self, action):
         text2add = self.textEdit.toPlainText().upper().split("\n")
         document= Document()
         section = document.sections[0]
@@ -65,18 +73,34 @@ class MyGUI(QMainWindow):
             
         pixmap = QtGui.QPixmap("currentqr.png")
         pixmap = pixmap.scaled(300, 300)
-        
-        options= QFileDialog.Options()
-        filename, _ =QFileDialog.getSaveFileName(self ,"Save doc file", "", "Files (*.doc)")
-        
-        document.save(filename)
         self.label.setScaledContents(True)
         self.label.setPixmap(pixmap)
         
-        print("Process Completed")
+        if action =="save":
+            options= QFileDialog.Options()
+            filename, _ =QFileDialog.getSaveFileName(self ,"Save doc file", "", "Files (*.doc)")
+            if not filename:
+                filename = "temp.doc"
+        
 
-# for windows only
-#        os.startfile(filename, "print")
+        if action =="print":
+            filename = "temp.doc"
+        print("filename "+ filename)
+        document.save(filename)
+        print("Save Process Completed")
+    
+    def savedoc(self):
+        self.generatedoc(action="save")
+        
+    def printdoc(self):
+        self.generatedoc(action="print")
+        systype = platform.system()
+        
+        if systype == "Windows":
+            os.startfile("temp.doc", "print")
+
+        if systype == "Linux":
+            print("Printing to linux")
     
 
 def main():
